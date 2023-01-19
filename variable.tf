@@ -22,27 +22,27 @@ variable "vm_size" {
   default = "Standard_F4"
 }
 
-// To use custom image
-// by default is false
-variable "custom" {
-  default = false
-}
+# // To use custom image
+# // by default is false
+# variable "custom" {
+#   default = false
+# }
 
-//  Custom image blob uri
-variable "customuri" {
-  type    = string
-  default = "<custom image blob uri>"
-}
+# //  Custom image blob uri
+# variable "customuri" {
+#   type    = string
+#   default = "<custom image blob uri>"
+# }
 
-variable "custom_image_name" {
-  type    = string
-  default = "<custom image name>"
-}
+# variable "custom_image_name" {
+#   type    = string
+#   default = "<custom image name>"
+# }
 
-variable "custom_image_resource_group_name" {
-  type    = string
-  default = "<custom image resource group>"
-}
+# variable "custom_image_resource_group_name" {
+#   type    = string
+#   default = "<custom image resource group>"
+# }
 
 // License Type to create FortiGate-VM
 // Provide the license type for FortiGate-VM Instances, either byol or payg.

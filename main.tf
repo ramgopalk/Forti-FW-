@@ -7,6 +7,16 @@ provider "azurerm" {
   tenant_id       = var.tenant_id
 }
 
+//provider
+terraform {
+required_providers {
+fortios = {
+source = "fortinetdev/fortios"
+}
+}
+}
+
+
 // Resource Group
 
 resource "azurerm_resource_group" "resourcegroup" {
