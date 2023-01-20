@@ -1,167 +1,167 @@
-// Create Virtual Network
+# // Create Virtual Network
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = var.vnetname
-  address_space       = [var.vnetcidr]
-  location            = var.location
-  resource_group_name = var.resourcegroup.name
-
-  tags = {
-    environment = "Terraform Single FortiGate"
-  }
-}
-
-resource "azurerm_subnet" "subnet1" {
-  name                 = var.subnet1.name
-  resource_group_name  = var.resourcegroup.name
-  virtual_network_name = var.vnet.name
-  address_prefixes     = [var.publiccidr]
-}
-
-resource "azurerm_subnet" "subnet2" {
-  name                 = var.subnet2.name
-  resource_group_name  = var.resourcegroup.name
-  virtual_network_name = var.vnet.name
-  address_prefixes     = [var.privatecidr]
-}
-
-resource "azurerm_subnet" "subnet3" {
-  name                 = var.subnet3 .name
-  resource_group_name  = var.resourcegroup.name
-  virtual_network_name = var.vnet.name
-  address_prefixes     = [var.protectedcidr]
-}
-
-# // Allocated Public IP
-# resource "azurerm_public_ip" "FGTPublicIp" {
-#   name                = "FGTPublicIP"
+# resource "azurerm_virtual_network" "vnet" {
+#   name                = var.vnetname
+#   address_space       = [var.vnetcidr]
 #   location            = var.location
 #   resource_group_name = var.resourcegroup.name
-#   allocation_method   = "Static"
-#   sku                 = "Standard"
 
 #   tags = {
 #     environment = "Terraform Single FortiGate"
 #   }
 # }
 
-//  Network Security Group
-resource "azurerm_network_security_group" "publicnetworknsg" {
-  name                = "PublicNetworkSecurityGroup"
-  location            = var.location
-  resource_group_name = var.resourcegroup.name
+# resource "azurerm_subnet" "subnet1" {
+#   name                 = var.subnet1.name
+#   resource_group_name  = var.resourcegroup.name
+#   virtual_network_name = var.vnet.name
+#   address_prefixes     = [var.publiccidr]
+# }
 
-  security_rule {
-    name                       = "TCP"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+# resource "azurerm_subnet" "subnet2" {
+#   name                 = var.subnet2.name
+#   resource_group_name  = var.resourcegroup.name
+#   virtual_network_name = var.vnet.name
+#   address_prefixes     = [var.privatecidr]
+# }
 
-  tags = {
-    environment = "Terraform Single FortiGate"
-  }
-}
+# resource "azurerm_subnet" "subnet3" {
+#   name                 = var.subnet3 .name
+#   resource_group_name  = var.resourcegroup.name
+#   virtual_network_name = var.vnet.name
+#   address_prefixes     = [var.protectedcidr]
+# }
 
-resource "azurerm_network_security_group" "privatenetworknsg" {
-  name                = "PrivateNetworkSecurityGroup"
-  location            = var.location
-  resource_group_name = var.resourcegroup.name
+# # // Allocated Public IP
+# # resource "azurerm_public_ip" "FGTPublicIp" {
+# #   name                = "FGTPublicIP"
+# #   location            = var.location
+# #   resource_group_name = var.resourcegroup.name
+# #   allocation_method   = "Static"
+# #   sku                 = "Standard"
 
-  security_rule {
-    name                       = "All"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+# #   tags = {
+# #     environment = "Terraform Single FortiGate"
+# #   }
+# # }
 
-  # tags = {
-  #   environment = "Terraform Single FortiGate"
-  # }
-}
+# //  Network Security Group
+# resource "azurerm_network_security_group" "publicnetworknsg" {
+#   name                = "PublicNetworkSecurityGroup"
+#   location            = var.location
+#   resource_group_name = var.resourcegroup.name
 
-resource "azurerm_network_security_rule" "outgoing_public" {
-  name                        = "egress"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = var.resourcegroup.name
-  network_security_group_name = azurerm_network_security_group.publicnetworknsg.name
-}
+#   security_rule {
+#     name                       = "TCP"
+#     priority                   = 1001
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "*"
+#     destination_port_range     = "*"
+#     source_address_prefix      = "*"
+#     destination_address_prefix = "*"
+#   }
 
-resource "azurerm_network_security_rule" "outgoing_private" {
-  name                        = "egress-private"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = var.resourcegroup.name
-  network_security_group_name = azurerm_network_security_group.privatenetworknsg.name
-}
+#   tags = {
+#     environment = "Terraform Single FortiGate"
+#   }
+# }
 
-// FGT Network Interface port1
-resource "azurerm_network_interface" "fgtport1" {
-  name                = "fgtport1"
-  location            = var.location
-  resource_group_name = var.resourcegroup.name
+# resource "azurerm_network_security_group" "privatenetworknsg" {
+#   name                = "PrivateNetworkSecurityGroup"
+#   location            = var.location
+#   resource_group_name = var.resourcegroup.name
 
-  ip_configuration {
-    name                          = "ipconfig1"
-    subnet_id                     = azurerm_subnet.subnet1.id
-    private_ip_address_allocation = "Dynamic"
-    primary                       = true
-    public_ip_address_id          = azurerm_public_ip.public_ip.id
-  }
+#   security_rule {
+#     name                       = "All"
+#     priority                   = 1001
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "*"
+#     source_port_range          = "*"
+#     destination_port_range     = "*"
+#     source_address_prefix      = "*"
+#     destination_address_prefix = "*"
+#   }
 
-  tags = {
-    environment = "Terraform Single FortiGate"
-  }
-}
+#   # tags = {
+#   #   environment = "Terraform Single FortiGate"
+#   # }
+# }
 
-resource "azurerm_network_interface" "fgtport2" {
-  name                 = "fgtport2"
-  location             = var.location
-  resource_group_name  = var.resourcegroup.name
-  enable_ip_forwarding = true
+# resource "azurerm_network_security_rule" "outgoing_public" {
+#   name                        = "egress"
+#   priority                    = 100
+#   direction                   = "Outbound"
+#   access                      = "Allow"
+#   protocol                    = "*"
+#   source_port_range           = "*"
+#   destination_port_range      = "*"
+#   source_address_prefix       = "*"
+#   destination_address_prefix  = "*"
+#   resource_group_name         = var.resourcegroup.name
+#   network_security_group_name = azurerm_network_security_group.publicnetworknsg.name
+# }
 
-  ip_configuration {
-    name                          = "ipconfig1"
-    subnet_id                     = azurerm_subnet.subnet2.id
-    private_ip_address_allocation = "Dynamic"
-  }
+# resource "azurerm_network_security_rule" "outgoing_private" {
+#   name                        = "egress-private"
+#   priority                    = 100
+#   direction                   = "Outbound"
+#   access                      = "Allow"
+#   protocol                    = "*"
+#   source_port_range           = "*"
+#   destination_port_range      = "*"
+#   source_address_prefix       = "*"
+#   destination_address_prefix  = "*"
+#   resource_group_name         = var.resourcegroup.name
+#   network_security_group_name = azurerm_network_security_group.privatenetworknsg.name
+# }
 
-  tags = {
-    environment = "Terraform Single FortiGate"
-  }
-}
-# Connect the security group to the network interfaces
-resource "azurerm_network_interface_security_group_association" "port1nsg" {
-  depends_on                = [azurerm_network_interface.fgtport1]
-  network_interface_id      = azurerm_network_interface.fgtport1.id
-  network_security_group_id = azurerm_network_security_group.publicnetworknsg.id
-}
+# // FGT Network Interface port1
+# resource "azurerm_network_interface" "fgtport1" {
+#   name                = "fgtport1"
+#   location            = var.location
+#   resource_group_name = var.resourcegroup.name
 
-resource "azurerm_network_interface_security_group_association" "port2nsg" {
-  depends_on                = [azurerm_network_interface.fgtport2]
-  network_interface_id      = azurerm_network_interface.fgtport2.id
-  network_security_group_id = azurerm_network_security_group.privatenetworknsg.id
-}
+#   ip_configuration {
+#     name                          = "ipconfig1"
+#     subnet_id                     = azurerm_subnet.subnet1.id
+#     private_ip_address_allocation = "Dynamic"
+#     primary                       = true
+#     public_ip_address_id          = azurerm_public_ip.public_ip.id
+#   }
+
+#   tags = {
+#     environment = "Terraform Single FortiGate"
+#   }
+# }
+
+# resource "azurerm_network_interface" "fgtport2" {
+#   name                 = "fgtport2"
+#   location             = var.location
+#   resource_group_name  = var.resourcegroup.name
+#   enable_ip_forwarding = true
+
+#   ip_configuration {
+#     name                          = "ipconfig1"
+#     subnet_id                     = azurerm_subnet.subnet2.id
+#     private_ip_address_allocation = "Dynamic"
+#   }
+
+#   tags = {
+#     environment = "Terraform Single FortiGate"
+#   }
+# }
+# # Connect the security group to the network interfaces
+# resource "azurerm_network_interface_security_group_association" "port1nsg" {
+#   depends_on                = [azurerm_network_interface.fgtport1]
+#   network_interface_id      = azurerm_network_interface.fgtport1.id
+#   network_security_group_id = azurerm_network_security_group.publicnetworknsg.id
+# }
+
+# resource "azurerm_network_interface_security_group_association" "port2nsg" {
+#   depends_on                = [azurerm_network_interface.fgtport2]
+#   network_interface_id      = azurerm_network_interface.fgtport2.id
+#   network_security_group_id = azurerm_network_security_group.privatenetworknsg.id
+# }

@@ -23,7 +23,7 @@ resource "azurerm_resource_group" "resourcegroup" {
   name     = var.resourcegroup.name
   location = var.location
 
-  tags = {
-    environment = "Terraform Demo"
-  }
+  # tags = {
+  #   environment = "Terraform Demo"
+  # }
 }
